@@ -1,0 +1,12 @@
+node_modules/
+.env
+dist/
+build/
+.git/
+*.log
+frontend/node_modules/
+backend/node_modules/
+backend-api/
+smash-cartel-creator/
+frontend/.env
+backend/.env
