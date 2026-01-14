@@ -40,6 +40,8 @@ Paste your credentials:
 PORT=3001
 UBER_CLIENT_ID=dCVXn3yJFKqSQGydf7B1HqLKI5MHldSs
 UBER_CLIENT_SECRET=-qIKamfoDKhBl6MfN4kIE6qxzmvMTuK5VkaJ2koe
+STAFF_USERNAME=admin
+STAFF_PASSWORD=smash123
 NODE_ENV=production
 ```
 

@@ -25,15 +25,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (username: string, password: string) => {
-    // For now, using a simple local check. 
-    // In production, this would call the /api/auth/login endpoint.
-    if (username === "admin" && password === "smash123") {
-      const newUser: User = { username, role: "admin" };
-      setUser(newUser);
-      localStorage.setItem("smash_user", JSON.stringify(newUser));
-      return true;
+    try {
+      const response = await fetch("http://localhost:3001/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        localStorage.setItem("smash_user", JSON.stringify(data.user));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Login Error:", error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
