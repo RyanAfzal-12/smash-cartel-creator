@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Wifi,
   WifiOff,
-  Settings
+  Settings,
+  LogOut
 } from "lucide-react";
 import { MOCK_ORDERS, Order, OrderStatus } from "@/data/orders";
 import { toast } from "sonner";
@@ -23,8 +24,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/context/AuthContext";
 
 const Orders = () => {
+  const { logout, user } = useAuth();
   const [orders, setOrders] = useState<Order[]>(MOCK_ORDERS);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [activeTab, setActiveTab] = useState("pending");
@@ -161,6 +164,15 @@ const Orders = () => {
                 onClick={() => toast.info("Settings", { description: "Uber Eats API Configuration is managed in the backend environment variables." })}
               >
                 <Settings className="h-5 w-5" />
+              </Button>
+
+              <Button 
+                variant="ghost"
+                size="icon"
+                className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                onClick={logout}
+              >
+                <LogOut className="h-5 w-5" />
               </Button>
             
             <Button 
