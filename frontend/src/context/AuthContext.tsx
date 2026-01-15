@@ -2,12 +2,15 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface User {
   username: string;
-  role: "admin" | "staff";
+  role: "admin" | "staff" | "customer";
+  fullName?: string;
+  phone?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<boolean>;
+  register: (userData: any) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -45,13 +48,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const register = async (userData: any) => {
+    try {
+      const response = await fetch("http://localhost:3001/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        localStorage.setItem("smash_user", JSON.stringify(data.user));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Register Error:", error);
+      return false;
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("smash_user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

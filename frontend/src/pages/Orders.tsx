@@ -57,14 +57,30 @@ const Orders = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const updateOrderStatus = (orderId: string, newStatus: OrderStatus) => {
-    setOrders(prev => prev.map(order => 
-      order.id === orderId ? { ...order, status: newStatus } : order
-    ));
-    if (selectedOrder?.id === orderId) {
-      setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
+  const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/ubereats/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (response.ok) {
+        setOrders(prev => prev.map(order => 
+          order.id === orderId ? { ...order, status: newStatus } : order
+        ));
+        if (selectedOrder?.id === orderId) {
+          setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
+        }
+        toast.success(`Order ${orderId} updated to ${newStatus}`);
+      }
+    } catch (error) {
+      toast.error("Failed to update order status on server");
+      // Fallback for mock orders
+      setOrders(prev => prev.map(order => 
+        order.id === orderId ? { ...order, status: newStatus } : order
+      ));
     }
-    toast.success(`Order ${orderId} updated to ${newStatus}`);
   };
 
   const simulateUberEatsOrder = () => {
@@ -346,11 +362,11 @@ const Orders = () => {
                           <div className="mt-8 p-6 rounded-3xl bg-background/40 border border-border/50">
                              <div className="flex justify-between items-center mb-2">
                                <span className="text-muted-foreground font-medium">Subtotal</span>
-                               <span className="font-bold">£{(selectedOrder.total - 2.5).toFixed(2)}</span>
+                               <span className="font-bold">£{selectedOrder.items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}</span>
                              </div>
                              <div className="flex justify-between items-center mb-4">
-                               <span className="text-muted-foreground font-medium">Delivery Fee</span>
-                               <span className="font-bold">£2.50</span>
+                               <span className="text-muted-foreground font-medium">Delivery & Service Fees</span>
+                               <span className="font-bold">£{(selectedOrder.total - selectedOrder.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)).toFixed(2)}</span>
                              </div>
                              <div className="pt-4 border-t border-border/50 flex justify-between items-center">
                                <span className="text-xl font-bold">Total</span>

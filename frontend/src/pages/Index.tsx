@@ -9,6 +9,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
+        <div id="v2-tag" className="hidden">v2.1-auth-fixed</div>
         <Hero />
         <MenuSection />
       </main>

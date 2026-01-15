@@ -1,7 +1,5 @@
 import * as uberService from '../services/uberService.js';
-
-// In-memory store for demo
-let orders = [];
+import Order from '../models/Orders.js';
 
 export const handleWebhook = async (req, res) => {
     // Acknowledge receipt to Uber immediately
@@ -23,7 +21,6 @@ export const handleWebhook = async (req, res) => {
                 customerName: `${orderData.cart.customer.first_name} ${orderData.cart.customer.last_name}`,
                 status: 'pending',
                 items: orderData.cart.items.map(item => ({
-                    id: item.id,
                     name: item.title,
                     quantity: item.quantity,
                     price: item.price / 100,
@@ -33,14 +30,41 @@ export const handleWebhook = async (req, res) => {
                 createdAt: new Date().toISOString()
             };
 
-            orders.unshift(newOrder);
-            console.log(`✅ Order ${orderId} added to system`);
+            // Save to MongoDB (Upsert to prevent duplicates)
+            await Order.findOneAndUpdate(
+                { id: orderId },
+                newOrder,
+                { upsert: true, new: true }
+            );
+
+            console.log(`✅ Order ${orderId} saved to Database`);
         } catch (err) {
             console.error('❌ Failed to process order notification:', err);
         }
     }
 };
 
-export const getOrders = (req, res) => {
-    res.json(orders);
+export const getOrders = async (req, res) => {
+    try {
+        const orders = await Order.find().sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch orders' });
+    }
+};
+
+export const updateOrderStatus = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    try {
+        const updatedOrder = await Order.findOneAndUpdate(
+            { id: id },
+            { status },
+            { new: true }
+        );
+        res.json(updatedOrder);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update order' });
+    }
 };

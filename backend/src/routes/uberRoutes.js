@@ -10,4 +10,7 @@ router.post('/webhook', verifyUberSignature, uberController.handleWebhook);
 // Get internal orders for our dashboard
 router.get('/orders', uberController.getOrders);
 
+// Update order status
+router.patch('/orders/:id/status', uberController.updateOrderStatus);
+
 export default router;

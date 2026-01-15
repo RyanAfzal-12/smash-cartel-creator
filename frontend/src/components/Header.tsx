@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
-import { ShoppingCart, MapPin, Clock, Package } from "lucide-react";
+import { ShoppingCart, MapPin, Clock, Package, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 
 const Header = () => {
   const { totalItems, setIsCartOpen } = useCart();
+  const { isAuthenticated, user, logout } = useAuth();
 
   return (
     <motion.header
@@ -50,19 +52,34 @@ const Header = () => {
               <span className="text-sm">12:00 PM - 4:00 AM</span>
             </div>
 
-            {/* Dashboard Link */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Link
-                to="/orders"
-                className="relative flex items-center gap-2 rounded-full border border-border bg-background/50 px-4 py-2.5 font-medium text-foreground transition-all hover:bg-accent"
-              >
-                <Package className="h-5 w-5" />
-                <span className="hidden sm:inline">Orders</span>
-              </Link>
-            </motion.div>
+            {/* Dashboard Link (Admin Only) */}
+            {isAuthenticated && (
+              <div className="flex items-center gap-2">
+                <div className="hidden lg:flex flex-col items-end mr-2">
+                  <span className="text-[10px] font-bold uppercase text-muted-foreground leading-none">Logged in as</span>
+                  <span className="text-xs font-bold text-fire-orange">{user?.fullName || user?.username}</span>
+                </div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link
+                    to="/orders"
+                    className="relative flex items-center gap-2 rounded-full border border-border bg-background/50 px-4 py-2.5 font-medium text-foreground transition-all hover:bg-accent"
+                  >
+                    <Package className="h-5 w-5" />
+                    <span className="hidden sm:inline">Portal</span>
+                  </Link>
+                </motion.div>
+                <button 
+                  onClick={logout}
+                  className="p-2.5 rounded-full border border-border hover:bg-destructive/10 hover:text-destructive transition-colors"
+                  title="Logout"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            )}
 
             {/* Cart Button */}
             <motion.button
