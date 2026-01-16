@@ -5,6 +5,8 @@ const OrderSchema = new mongoose.Schema({
     externalId: String, // Uber display_id
     source: { type: String, default: 'ubereats' },
     customerName: String,
+    phone: String,
+    address: String,
     status: {
         type: String,
         enum: ['pending', 'accepted', 'preparing', 'ready', 'delivered', 'cancelled'],

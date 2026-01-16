@@ -10,6 +10,7 @@ import {
   ShoppingBag,
   Bell,
   Play,
+  Smartphone,
   Check,
   ChevronRight,
   Wifi,
@@ -357,6 +358,31 @@ const Orders = () => {
                                 <span className="font-bold text-lg text-muted-foreground">£{(item.price * item.quantity).toFixed(2)}</span>
                               </motion.div>
                             ))}
+                          </div>
+
+                          {/* Customer Info Section */}
+                          <div className="mt-8 p-6 rounded-3xl bg-secondary/30 border border-border/50">
+                             <h4 className="font-bold text-lg uppercase tracking-wider text-muted-foreground mb-4">Customer Details</h4>
+                             <div className="space-y-3">
+                               <div className="flex items-center gap-3">
+                                 <div className="h-8 w-8 rounded-lg bg-background flex items-center justify-center border border-border">
+                                   <Smartphone className="h-4 w-4 text-primary" />
+                                 </div>
+                                 <div>
+                                   <p className="text-[10px] font-bold uppercase text-muted-foreground">Phone Number</p>
+                                   <p className="font-bold">{(selectedOrder as any).phone || selectedOrder.customerPhone || 'N/A'}</p>
+                                 </div>
+                               </div>
+                               <div className="flex items-center gap-3">
+                                 <div className="h-8 w-8 rounded-lg bg-background flex items-center justify-center border border-border">
+                                   <AlertCircle className="h-4 w-4 text-primary" />
+                                 </div>
+                                 <div>
+                                   <p className="text-[10px] font-bold uppercase text-muted-foreground">Delivery Address</p>
+                                   <p className="font-bold truncate max-w-[200px]">{selectedOrder.address || 'N/A'}</p>
+                                 </div>
+                               </div>
+                             </div>
                           </div>
 
                           <div className="mt-8 p-6 rounded-3xl bg-background/40 border border-border/50">

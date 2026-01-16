@@ -3,15 +3,15 @@ import { verifyOTP } from './authController.js';
 
 export const createWebsiteOrder = async (req, res) => {
     try {
-        const { items, total, customerName, username, phone, otp } = req.body;
+        const { items, total, customerName, phone, address, otp, isAdmin } = req.body;
 
-        // 1. Stricter Auth Check
-        if (!username || username === 'Guest') {
-            return res.status(401).json({ error: 'Login required' });
+        // 1. Basic validation
+        if (!customerName || !phone || !address) {
+            return res.status(400).json({ error: 'Name, Phone, and Address are required' });
         }
 
-        // 2. OTP Verification (Skip if admin is forcing it for testing, but usually required)
-        if (username !== 'admin') {
+        // 2. OTP Verification (Skip if admin)
+        if (!isAdmin) {
             const isOTPValid = verifyOTP(phone, otp);
             if (!isOTPValid) {
                 return res.status(400).json({ error: 'Invalid or expired OTP' });
@@ -34,7 +34,9 @@ export const createWebsiteOrder = async (req, res) => {
             id: `WEB-${Math.random().toString(36).substr(2, 9)}`,
             externalId: trackingId,
             source: 'website',
-            customerName: customerName || 'Valued Customer',
+            customerName: customerName,
+            phone: phone,
+            address: address,
             status: 'pending',
             items: processedItems,
             total: total,
