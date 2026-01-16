@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { MapPin, Clock, Phone, Instagram, Facebook } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -63,8 +64,12 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-border/50 mt-8 pt-8 text-center text-muted-foreground text-sm">
+        <div className="border-t border-border/50 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-sm">
           <p>© 2024 Smash Burgers. All rights reserved. 100% Halal.</p>
+          <div className="flex items-center gap-6">
+            <Link to="/login" className="hover:text-primary transition-colors font-medium">Staff Portal</Link>
+            <p>Built with ❤️ for Bristol</p>
+          </div>
         </div>
       </div>
     </footer>

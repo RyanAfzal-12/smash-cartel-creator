@@ -3,7 +3,7 @@ import { X, Plus, Minus, Trash2, ShoppingBag, User, Smartphone, ShieldCheck, Che
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
@@ -24,6 +24,14 @@ const Cart = () => {
   
   // Success States
   const [trackingId, setTrackingId] = useState<string | null>(null);
+  
+  // Initialize form with user data if available
+  useEffect(() => {
+    if (isAuthenticated && user) {
+        if (!guestName) setGuestName(user.fullName || user.username);
+        if (!guestPhone) setGuestPhone(user.phone || "");
+    }
+  }, [isAuthenticated, user]);
 
   const deliveryFee = 2.99;
   const serviceFee = 0.99;
@@ -59,9 +67,9 @@ const Cart = () => {
     if (items.length === 0) return;
     
     const isAdmin = user?.role === 'admin';
-    const name = isAuthenticated ? (user?.fullName || user?.username) : guestName;
-    const phone = isAuthenticated ? user?.phone : guestPhone;
-    const address = isAuthenticated ? "Admin Office" : guestAddress; // Admins don't need address? Or use a placeholder.
+    const name = guestName;
+    const phone = guestPhone;
+    const address = guestAddress || (isAdmin ? "Admin Office" : ""); 
 
     if (!name || !phone || (!address && !isAdmin)) {
       toast.error("Missing Information", { description: "Please fill in all fields." });
@@ -176,10 +184,10 @@ const Cart = () => {
                 
                 <div className="flex items-center gap-2">
                   {isAuthenticated && (
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-xs font-bold mr-2">
-                      <User className="h-3 w-3 text-primary" />
-                      <span className="max-w-[80px] truncate">{user?.fullName?.split(' ')[0]}</span>
-                      <button onClick={logout} className="text-[10px] text-muted-foreground hover:text-destructive">Exit</button>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-xs font-bold mr-2 border border-primary/20">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      <span className="max-w-[80px] truncate">{user?.fullName?.split(' ')[0] || user?.username}</span>
+                      <button onClick={logout} className="text-[10px] text-muted-foreground hover:text-destructive underline ml-1">Exit</button>
                     </div>
                   )}
                   <button onClick={() => setIsCartOpen(false)} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary">
@@ -218,12 +226,14 @@ const Cart = () => {
                       ))}
                     </div>
 
-                    {/* Guest Checkout Form */}
-                    {!isAuthenticated && items.length > 0 && (
+                    {/* Order Details Form */}
+                    {items.length > 0 && (
                       <div className="space-y-4 pt-4 border-t border-border">
                         <div className="flex items-center gap-2 mb-2">
                           <Smartphone className="h-4 w-4 text-primary" />
-                          <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Order Details</h3>
+                          <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                            {isAuthenticated ? "Confirm Details" : "Order Details"}
+                          </h3>
                         </div>
                         
                         <div className="space-y-3">
@@ -246,7 +256,7 @@ const Cart = () => {
                               className="bg-secondary/30 border-border/50 h-11"
                             />
                           </div>
-
+ 
                           <div className="space-y-1">
                             <label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Delivery Address</label>
                             <Input 
