@@ -56,7 +56,7 @@ const Hero = () => {
 
           {/* Main Title */}
           <h1 className="font-display text-6xl md:text-8xl lg:text-9xl text-gradient-fire mb-4 tracking-wider">
-            SMASH BURGERS
+            KASH SMASH
           </h1>
           
           <motion.p

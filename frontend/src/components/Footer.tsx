@@ -10,7 +10,7 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <h3 className="font-display text-3xl text-gradient-fire mb-4">
-              SMASH BURGERS
+              KASH SMASH
             </h3>
             <p className="text-muted-foreground mb-4">
               Halal smash burgers, crispy chicken, and loaded fries. The best comfort food in Bristol.
@@ -65,10 +65,9 @@ const Footer = () => {
 
         {/* Bottom */}
         <div className="border-t border-border/50 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-muted-foreground text-sm">
-          <p>© 2024 Smash Burgers. All rights reserved. 100% Halal.</p>
+          <p>© 2024 kash smash. All rights reserved. 100% Halal.</p>
           <div className="flex items-center gap-6">
             <Link to="/login" className="hover:text-primary transition-colors font-medium">Staff Portal</Link>
-            <p>Built with ❤️ for Bristol</p>
           </div>
         </div>
       </div>

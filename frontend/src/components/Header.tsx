@@ -32,7 +32,7 @@ const Header = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-fire blur-xl opacity-50" />
               <h1 className="relative font-display text-3xl md:text-4xl text-gradient-fire tracking-wider">
-                SMASH BURGERS
+                KASH SMASH
               </h1>
             </div>
           </motion.div>
